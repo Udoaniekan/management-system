@@ -81,4 +81,14 @@ async user(headers:any): Promise<any>{
     throw new UnauthorizedException('Invalid or missing Bearer token');
   }
 }
+
+async findEmail(email:string){
+  const user = await this.userRepo.findOneBy({email:email});
+
+  if(!user){
+    throw new UnauthorizedException();
+  }else{
+    return user;
+  }
+}
 }

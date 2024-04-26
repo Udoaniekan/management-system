@@ -7,5 +7,5 @@ export class Base{
     id: string;
 
     @CreateDateColumn()
-    created_date:Date
+    createdDate:Date
 }

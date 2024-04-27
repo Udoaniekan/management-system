@@ -66,7 +66,7 @@ async login(payload:LoginDto,@Res()res:Response){
 async user(headers:any): Promise<any>{
   const authorizationHeader = headers.authorization;
   if (authorizationHeader){
-    const token = authorizationHeader.replace('bearer', '');
+    const token = authorizationHeader.replace('Bearer', '').trim();
     const secret = process.env.JWT_SECRET;
     try{
       const decoded = this.jwtService.verify(token);
@@ -90,5 +90,9 @@ async findEmail(email:string){
   }else{
     return user;
   }
+}
+
+async getAllUsers(){
+  return await this.userRepo.find()
 }
 }

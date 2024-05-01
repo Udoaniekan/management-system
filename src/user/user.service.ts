@@ -1,5 +1,5 @@
 
-import { BadRequestException, HttpException, Injectable, Res, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -63,10 +63,21 @@ async login(payload:LoginDto,@Res()res:Response){
   })
 }
 
+async logout(@Req() req:Request, @Res()res:Response){
+  const clearCookie = res.clearCookie('userAuthentication');
+
+  const response = res.send(`user successfully logout`)
+
+  return{
+    clearCookie,
+    response
+  }
+}
+
 async user(headers:any): Promise<any>{
   const authorizationHeader = headers.authorization;
   if (authorizationHeader){
-    const token = authorizationHeader.replace('Bearer', '').trim();
+    const token = authorizationHeader.replace('Bearer','').trim();
     const secret = process.env.JWT_SECRET;
     try{
       const decoded = this.jwtService.verify(token);

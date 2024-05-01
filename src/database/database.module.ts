@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entity/user.entity';
+import { Product } from 'src/product/entities/product.entity';
 
 @Module({
      imports:[
     TypeOrmModule.forRootAsync({
+      imports:[ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
         host: configService.getOrThrow('DB_HOST'),
@@ -13,12 +15,12 @@ import { User } from '../entity/user.entity';
         username: configService.getOrThrow('DB_USER'),
         password: configService.getOrThrow('DB_PASSWORD'),
         database: configService.getOrThrow('DB_NAME'),
-        entities:[User],
+        entities:[User, Product],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    DatabaseModule,]
+  ],
     
 })
 export class DatabaseModule {}

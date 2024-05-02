@@ -31,7 +31,7 @@ export class ProductService {
     return{
       statusCode: 201,
       message: 'product updated successfully',
-      data: updateProduct,
+      updateProduct
     }
 
 

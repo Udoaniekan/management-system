@@ -1,6 +1,7 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { Base } from "./base.entity";
 import { userRole } from "../enum/enum";
+import { Product } from "src/product/entities/product.entity";
 
 @Entity()
 export class User extends Base {
@@ -19,6 +20,10 @@ export class User extends Base {
         default: userRole.member
     })
     role: userRole
+
+    @OneToMany(()=>Product, (product)=>product.user,
+    {eager:true, onDelete:'CASCADE'})
+    product: Product []
 
 
 }

@@ -4,7 +4,7 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from 'src/entity/user.entity';
+import { User } from '../entity/user.entity';
 import * as bcrypt from 'bcrypt'
 import { LoginDto } from 'src/dto/login.dto';
 import { Request, Response } from 'express';
@@ -38,8 +38,11 @@ async signUp(payload: CreateUserDto){
 
 async login(payload:LoginDto,@Res()res:Response){
   const{email, password} =payload;
-  const user = await this.userRepo.findOne({where:{email}});
+  const user = await this.userRepo.createQueryBuilder("user")
+  .addSelect("user.password")
+  .where("user.email = :email", {email:payload.email}).getOne()
   if(!user) throw new HttpException('invalid credentials', 404);
+  
   const Ismatch = await bcrypt.compare(password, user.password);
   if(!Ismatch){
     throw new HttpException('invalid credentials', 404);

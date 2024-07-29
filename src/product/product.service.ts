@@ -1,15 +1,18 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Product } from './entities/product.entity';
+import { Product} from './entities/product.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/entity/user.entity';
 
 @Injectable()
 export class ProductService {
   constructor(@InjectRepository(Product) private userProduct:Repository<Product>){}
-  async create(payload: CreateProductDto) {
-    const newProduct = await this.userProduct.create(payload)
+  async create(payload: CreateProductDto, user:User) {
+    const newProduct = new Product();
+    newProduct.userId = user.id;
+    Object.assign(newProduct, payload)
     return this.userProduct.save(newProduct)
   }
 

@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Request} from 'express';
+import { User } from 'src/entity/user.entity';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post('create')
-  create(@Body() payload: CreateProductDto) {
-    return this.productService.create(payload);
+  @Post()
+  async create(@Body() payload: CreateProductDto, @Req()req:Request){
+    return await this.productService.create(payload, req.user as User)
   }
 
   @Get()

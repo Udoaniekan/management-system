@@ -1,6 +1,6 @@
 import { Base } from "src/entity/base.entity";
 import { User } from "src/entity/user.entity";
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()
 export class Product extends Base{
@@ -18,7 +18,11 @@ export class Product extends Base{
     @Column()
     price:string;
 
-   @OneToMany(()=>User, (user)=>user.product)
+   @ManyToOne(()=>User, (user)=>user.product)
    user: User; 
+
+   
+   @Column()
+   userId:string;
    
 }

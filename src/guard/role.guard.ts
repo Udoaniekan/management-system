@@ -4,7 +4,7 @@ import { forBiddenRoleException } from "src/Exception/role.exception";
 import { userRole } from "src/enum/enum";
 import { UserService } from "src/user/user.service";
 
-@   Injectable()
+@Injectable()
     export class RolesGuard implements CanActivate{
     constructor (private reflector:Reflector, private userService:UserService){}
 

@@ -20,12 +20,13 @@ import { RolesGuard } from 'src/guard/role.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { userRole } from 'src/enum/enum';
 import { Roles } from 'src/guard/roles';
+import { profileDto } from './profile.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('signup')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.signUp(createUserDto);
   }
@@ -47,5 +48,11 @@ export class UserController {
   @Roles(userRole.member, userRole.manager)
   findAll(){
     return this.userService.getAllUsers()
+  }
+
+  @Post('profile')
+  @UseGuards(AuthGuard())
+  createProfile(@Body() payload: profileDto, @Req() req:Request) {
+    return this.userService.createProfile(payload, req);
   }
 }

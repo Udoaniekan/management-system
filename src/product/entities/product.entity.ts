@@ -1,6 +1,7 @@
+import { Comment } from "src/comment/entities/comment.entity";
 import { Base } from "src/entity/base.entity";
 import { User } from "src/entity/user.entity";
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()
 export class Product extends Base{
@@ -21,8 +22,13 @@ export class Product extends Base{
    @ManyToOne(()=>User, (user)=>user.product)
    user: User; 
 
+   @ManyToMany(()=>Comment, (comment)=>comment.product)
+   @JoinTable()
+   comment:Comment[]
+
    
    @Column()
-   userId:string;
+   userId:number;
+//   findProduct: { userComment: string; userId: number; product: Product[]; id: number; createdDate: Date; };
    
 }

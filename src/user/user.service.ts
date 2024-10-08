@@ -1,5 +1,5 @@
 
-import { BadRequestException, HttpException, Injectable, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,10 +9,12 @@ import * as bcrypt from 'bcrypt'
 import { LoginDto } from 'src/dto/login.dto';
 import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { Profile } from 'src/entity/userProfile.entity';
+import { profileDto } from './profile.dto';
 
 @Injectable()
 export class UserService {
-constructor(@InjectRepository(User) private userRepo:Repository<User>,
+constructor(@InjectRepository(User) private userRepo:Repository<User>,@InjectRepository(Profile) private profileRepo:Repository<Profile>,
 private readonly jwtService:JwtService)
 {}
 async signUp(payload: CreateUserDto){
@@ -109,4 +111,30 @@ async findEmail(email:string){
 async getAllUsers(){
   return await this.userRepo.find()
 }
+async createProfile(payload:profileDto , @Req() req:Request){
+  const user= req?.user;
+  // if(!user){
+  //   throw new HttpException(`user not found`, HttpStatus.NOT_FOUND)
+  // } 
+  const id = user['id'] 
+
+  const findUser = await this.userRepo.findOne({where:{id:id}});
+
+  if(!findUser){
+    throw new HttpException(`no user was found`, HttpStatus.NOT_FOUND)
+  }
+  try{
+    const userProfile = this.profileRepo.create({
+      ...payload,
+      user
+    });
+
+    const saveProfile = await this.profileRepo.save(userProfile);
+    return saveProfile
+  }catch(error){
+    return error
+  }
 }
+
+}
+

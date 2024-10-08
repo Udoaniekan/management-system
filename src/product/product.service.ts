@@ -10,24 +10,26 @@ import { User } from 'src/entity/user.entity';
 export class ProductService {
   constructor(@InjectRepository(Product) private userProduct:Repository<Product>){}
   async create(payload: CreateProductDto, user:User) {
+    const findUser=user
+    console.log(findUser)
     const newProduct = new Product();
-    newProduct.userId = user.id;
+    newProduct.userId = user.id; 
     Object.assign(newProduct, payload)
     return this.userProduct.save(newProduct)
-  }
-
+  } 
+ 
  async findAll() {
     return await this.userProduct.find()
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     const find1 = await this.userProduct.findOne({where:{id:id}});
     if(!find1) throw new HttpException('sorry id not found', 400);
     return find1
   }
 
 
-  async update(id: string, payload: UpdateProductDto) {
+  async update(id: number, payload: UpdateProductDto) {
     const find1st = await this.userProduct.findOne({where:{id:id}});
     if(!find1st) throw new HttpException('sorry, incorrect id', 400);
     const updateProduct = await this.userProduct.update(id, payload);
@@ -40,7 +42,7 @@ export class ProductService {
 
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     const find = await this.userProduct.findOne({where:{id:id}});
     if (!find) throw new HttpException('sorry, no such product found', 400);
     await this.userProduct.delete(id);

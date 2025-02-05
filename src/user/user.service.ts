@@ -23,7 +23,7 @@ async signUp(payload: CreateUserDto){
   const isUser = await this.userRepo.findOne({where:{email}});
   if(isUser) throw new HttpException('sorry user with this email already exist', 400); 
 
-  const hashPassword = await  bcrypt.hash(password, 5);
+  const hashPassword = await bcrypt.hash(password, 5);
 
   try {
     const  user = await this.userRepo.save({email, password: hashPassword, ...rest});

@@ -21,6 +21,7 @@ export class CommentService {
     const j = await this.productComment.save(newComment)
     if (!findProduct.comment) {
       findProduct.comment = [];
+      console.log(j); 
     }
     const m = findProduct.comment.push(j)
     console.log(m); 

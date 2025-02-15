@@ -15,7 +15,7 @@ export class CommentController {
   async create(
     @Body() payload: CreateCommentDto, 
     @Req() req: Request, 
-    @Param('productId') productId: number // Extract productId correctly
+    @Param('productId') productId: number  // Extract productId correctly
   ) {
     return await this.commentService.create(payload, req.user as User, Number(productId)); // Ensure productId is a number
   }

@@ -11,26 +11,29 @@ import { Comment } from './entities/comment.entity';
 export class CommentService {
   constructor(@InjectRepository(Comment) private productComment:Repository<Comment>, @InjectRepository(Product) private productRepo:Repository<Product>){}
 
-  async create(payload: CreateCommentDto, user:User, productId:number) {
-    console.log(user)
+  async create(payload: CreateCommentDto, user: User, productId: number) {
+    console.log(user);
+    // Create a new comment instance
     const newComment = new Comment();
     newComment.userId = user.id;
-    Object.assign(newComment, payload)
-    const findProduct= await this.productRepo.findOne({where:{id:1}});
-    if(!findProduct) throw new HttpException('sorry product not found', 400);
-    const j = await this.productComment.save(newComment)
-    if (!findProduct.comment) {
-      findProduct.comment = [];
-      console.log(j); 
-    }
-    const m = findProduct.comment.push(j)
-    console.log(m); 
-    
-    await this.productRepo.save(findProduct)
-    return j
+    Object.assign(newComment, payload);
+    // Find the product by productId
+    const findProduct = await this.productRepo.findOne({
+        where: { id: productId }, 
+        relations: ["comments"], // Ensure comments are loaded
+    });
+    if (!findProduct) throw new HttpException('Sorry, product not found', 400);
+    // Assign the product to the comment
+    newComment.product = findProduct;
+    // Save the new comment
+    const savedComment = await this.productComment.save(newComment);
+    // Push the new comment into the product's comments array
+    findProduct.comments.push(savedComment);
+    // Save the updated product
+    await this.productRepo.save(findProduct);
 
-
-  }
+    return savedComment;
+}
 
   findAll() {
     return `This action returns all comment`;

@@ -13,6 +13,4 @@ export class Comment extends Base {
     @ManyToOne(() => Product, (product) => product.comments, { onDelete: "CASCADE" })
     product: Product;
 
-    @Column()
-    productId: number;
 }

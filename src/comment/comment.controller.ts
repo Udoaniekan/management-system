@@ -12,8 +12,12 @@ export class CommentController {
 
   @Post('/:productId/create-comment')
   @UseGuards(AuthGuard())
- async create(@Body() payload: CreateCommentDto, @Req() req:Request,@Param() productId:number) {
-   return await this.commentService.create(payload, req.user as User, productId)
+  async create(
+    @Body() payload: CreateCommentDto, 
+    @Req() req: Request, 
+    @Param('productId') productId: number // Extract productId correctly
+  ) {
+    return await this.commentService.create(payload, req.user as User, Number(productId)); // Ensure productId is a number
   }
 
   @Get()

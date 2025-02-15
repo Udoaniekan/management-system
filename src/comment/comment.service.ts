@@ -13,27 +13,23 @@ export class CommentService {
 
   async create(payload: CreateCommentDto, user: User, productId: number) {
     console.log(user);
+
+    // Find the product inside the service
+    const product = await this.productRepo.findOneBy({ id: productId });
+    if (!product) {
+        throw new HttpException('Product not found', 404);
+    }
+
     // Create a new comment instance
     const newComment = new Comment();
     newComment.userId = user.id;
+    newComment.product = product; // Link product automatically
     Object.assign(newComment, payload);
-    // Find the product by productId
-    const findProduct = await this.productRepo.findOne({
-        where: { id: productId }, 
-        relations: ["comments"], // Ensure comments are loaded
-    });
-    if (!findProduct) throw new HttpException('Sorry, product not found', 400);
-    // Assign the product to the comment
-    newComment.product = findProduct;
-    // Save the new comment
-    const savedComment = await this.productComment.save(newComment);
-    // Push the new comment into the product's comments array
-    findProduct.comments.push(savedComment);
-    // Save the updated product
-    await this.productRepo.save(findProduct);
 
-    return savedComment;
+    return await this.productComment.save(newComment);
 }
+
+
 
   findAll() {
     return `This action returns all comment`;

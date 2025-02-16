@@ -110,11 +110,9 @@ async findEmail(email:string){
 async getAllUsers(){
   return await this.userRepo.find()
 }
+
 async createProfile(payload:profileDto , @Req() req:Request){
   const user= req?.user;
-  // if(!user){
-  //   throw new HttpException(`user not found`, HttpStatus.NOT_FOUND)
-  // } 
   const id = user['id'] 
 
   const findUser = await this.userRepo.findOne({where:{id:id}});

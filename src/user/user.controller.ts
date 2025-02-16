@@ -38,9 +38,9 @@ export class UserController {
 
   @HttpCode(200)
   @Post('logout')
-  async logout(@Req()req:Request, @Res()
+  async logout(@Res()
   res:Response){
-    return await this.userService.logout(req,res)
+    return await this.userService.logout(res)
   }
 
   @Get()

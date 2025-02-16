@@ -67,7 +67,7 @@ async login(payload:LoginDto,@Res()res:Response){
   })
 }
 
-async logout(@Req() req:Request, @Res()res:Response){
+async logout(@Res()res:Response){
   const clearCookie = res.clearCookie('userAuthentication');
 
   const response = res.send(`user successfully logout`)
@@ -111,25 +111,27 @@ async getAllUsers(){
   return await this.userRepo.find()
 }
 
-async createProfile(payload:profileDto , @Req() req:Request){
-  const user= req?.user;
-  const id = user['id'] 
-
-  const findUser = await this.userRepo.findOne({where:{id:id}});
-
-  if(!findUser){
-    throw new HttpException(`no user was found`, HttpStatus.NOT_FOUND)
+async createProfile(payload: profileDto, @Req() req: Request) {
+  const user = req?.user;
+  const id = user['id'];
+  // Check if the user exists
+  const findUser = await this.userRepo.findOne({ where: { id: id }, relations: ['profile'] });
+  if (!findUser) {
+    throw new HttpException(`No user was found`, HttpStatus.NOT_FOUND);
   }
-  try{
+  // Check if the user already has a profile
+  if (findUser.profile) {
+    throw new HttpException(`User already has a profile`, HttpStatus.BAD_REQUEST);
+  }
+  try {
     const userProfile = this.profileRepo.create({
       ...payload,
       user
     });
-
     const saveProfile = await this.profileRepo.save(userProfile);
-    return saveProfile
-  }catch(error){
-    return error
+    return saveProfile;
+  } catch (error) {
+    return error;
   }
 }
 

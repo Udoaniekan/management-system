@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
 import { LoginDto } from 'src/dto/login.dto';
 import { Request, Response } from 'express';
 import { RolesGuard } from 'src/guard/role.guard';

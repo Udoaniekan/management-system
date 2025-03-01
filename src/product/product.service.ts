@@ -38,8 +38,6 @@ export class ProductService {
       message: 'product updated successfully',
       updateProduct
     }
-
-
   }
 
   async remove(id: number) {

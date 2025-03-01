@@ -111,6 +111,17 @@ async getAllUsers(){
   return await this.userRepo.find()
 }
 
+async getById(id:number){
+  const user = await this.userRepo.findOneBy({id});
+  if(!user){
+    throw new HttpException('User not found', 404);
+  }
+  return {
+     result: user,
+  }
+}
+
+
 async createProfile(payload: profileDto, @Req() req: Request) {
   const user = req?.user;
   const id = user['id'];

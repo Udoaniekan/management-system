@@ -49,6 +49,13 @@ export class UserController {
     return this.userService.getAllUsers()
   }
 
+  @Get(':id')
+  @UseGuards(AuthGuard(), RolesGuard)
+  @Roles(userRole.member, userRole.manager)
+  findById(@Param('id') id: number){
+    return this.userService.getById(id);
+  }
+
   @Post('profile')
   @UseGuards(AuthGuard())
   createProfile(@Body() payload: profileDto, @Req() req:Request) {
